@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+<div class="container">
+    <div class = "p-4 m-4">
+        <div class="col-lg-4 mt-4 mb-4 mx-auto border rounded  pt-4 ps-4 pb-4 pe-4">
+            <h3 class="alert alert-light border mt-4 mb-4 rounded">Checkout Here</h3>
+            <form action="/checkout" method="POST">
+                
+                {% csrf_token %}
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                  {{error}}
+                </div>
+                {% endif %}
+                
+                <!--address-->
+                <div class="form-group mb-3">
+                  <label for="">Address</label>
+                  <input required type="address" name="address" id=""  class="form-control form-control-sm" placeholder="" aria-describedby="helpId">
+                </div>
+                <!--phone-->
+                <div class="form-group mb-3">
+                    <label for="">Phone</label>
+                    <input required type="phone" name="phone" id="" class="form-control form-control-sm" placeholder="" aria-describedby="helpId">
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-sm btn-info col-lg-4" type = "submit" value="Checkout">
+                </div>  
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

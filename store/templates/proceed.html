@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load cart %}
+
+{% load custom_filter %}
+<div class="container">
+    <div class = "p-4 m-4">
+        <div class="col-lg-4 mt-4 mb-4 mx-auto border rounded  pt-4 ps-4 pb-4 pe-4">
+            <h3 class="alert alert-light border mt-4 mb-4 rounded">Payment Page</h3>
+            <form action="/proceed" method="POST">
+                
+                {% csrf_token %}
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                  {{error}}
+                </div>
+                {% endif %}
+                
+                <!---->
+                <div class="paypal-button-container"></div>
+
+                <script src="https://www.paypal.com/sdk/js?client-id=AURm4c6bMpFVzxt1xWZ1QVfaEzquoQUJ3mpow-apuG8xnoPsz1qMbgHDWQV1oN8jZBli0ssfaMZMT7Sa&currency=USD"></script>
+
+                <script>
+                    var total = '{{total}}'
+                    console.log(total)
+                    // Render the PayPal button into #paypal-button-container
+                    paypal.Buttons({
+            
+                        // Set up the transaction
+                        createOrder: function(data, actions) {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    amount: {
+                                        value: total
+                                    }
+                                }]
+                            });
+                        },
+            
+                        // Finalize the transaction
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(orderData) {
+                                // Successful capture! For demo purposes:
+                                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                                var transaction = orderData.purchase_units[0].payments.captures[0];
+                                alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+            
+                                // Replace the above to show a success message within this page, e.g.
+                                // const element = document.getElementById('paypal-button-container');
+                                // element.innerHTML = '';
+                                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                                // Or go to another URL:  actions.redirect('thank_you.html');
+                            });
+                        }
+            
+            
+                    }).render('.paypal-button-container');
+                </script>
+                 
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
